@@ -13,6 +13,7 @@ $type = $_GET['type'];
 $kz = $_GET['kz'];
 $mitglied = $_GET['mitglied'];
 $text1 = $_GET['text1'];
+$tname = $_GET['tname'];
 $lat = $_GET['lat'];
 $lng = $_GET['lng'];
 
@@ -29,7 +30,7 @@ if (!$db_selected) {
 }
 
 // Edit data with user data
-$query = sprintf("UPDATE marlesreuth SET anzahl = '%s', address = '%s', ort = '%s', datum = '%s', uhrzeit = '%s' ,type = '%s',kz = '%s',mitglied = '%s',text1 = '%s', lat = '%s', lng = '%s' WHERE id = '%s';",
+$query = sprintf("UPDATE marlesreuth SET anzahl = '%s', address = '%s', ort = '%s', datum = '%s', uhrzeit = '%s' ,type = '%s',kz = '%s',mitglied = '%s',text1 = '%s',tname = '%s', lat = '%s', lng = '%s' WHERE id = '%s';",
 		mysql_real_escape_string($anzahl),
 		mysql_real_escape_string($address),
 		mysql_real_escape_string($ort),
@@ -39,6 +40,7 @@ $query = sprintf("UPDATE marlesreuth SET anzahl = '%s', address = '%s', ort = '%
 		mysql_real_escape_string($kz),
 		mysql_real_escape_string($mitglied),
 		mysql_real_escape_string($text1),
+		mysql_real_escape_string($tname),
 		mysql_real_escape_string($lat),
 		mysql_real_escape_string($lng),
 		mysql_real_escape_string($id));

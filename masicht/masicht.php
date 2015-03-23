@@ -39,6 +39,17 @@ if(!$_SESSION['logged_in']){
 <script type="text/javascript" src="./mapscript/v3/tooltip.js"></script>
 <script type="text/javascript" src="./jquery/jquery-1.8.3.min.js"></script>
 
+<script type="text/javascript">
+    var datefield=document.createElement("input")
+    datefield.setAttribute("class", ".dat1")
+    if (datefield.type!=".dat1"){ //eigenes Datumsformat date1, load files for jQuery UI Date Picker
+          document.write('<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />\n')
+//        funktioniert mit google maps nicht
+//        document.write('<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"><\/script>\n')
+          document.write('<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"><\/script>\n')
+    }
+</script>
+
 <style type="text/css">	
 	#inhalt {
 	width: 980px;
@@ -175,6 +186,8 @@ if(!$_SESSION['logged_in']){
 //<![CDATA[
 	var map;
 	var i;
+	var d;
+	var tname;
 	var drawingManager;
 	var geocoder;
 	var new_marker;
@@ -231,6 +244,12 @@ if(!$_SESSION['logged_in']){
 		name: "OSM",
 		maxZoom: 19
 	});
+
+	if (datefield.type!=".dat1"){ //eigens Datumsformat für alle Browser 
+		jQuery(function($){ //on document.ready
+			$('.dat1').datepicker( {dateFormat: "yy-mm-dd"} );
+		})
+	};
 
  	function HomeControl(controlDiv, map) {
 	  controlDiv.style.padding = '5px';
@@ -313,12 +332,29 @@ if(!$_SESSION['logged_in']){
 		side_bar_html += '<tr> <td  width="80" align="center" > '+ datum +' </td> <td> <a href="javascript:myclick(' + (gmarkers.length-1) + ')" > '+ type +' </td> <td width="50" align="center" > '+ anzahl +' </td> </tr>';
 	}
 
+//  Foto
+	function upload (tname) {
+	fenster = window.open('./uploadf.php?tname='+ tname + '', "Upload", "width=350,height=150,resizable=yes");
+	fenster.focus();
+	return false;
+	}
+
+	function displayf (tname) {
+	fenster = window.open('./displayf.php?tname='+ tname + '.JPG', "Display", "width=500,height=375,resizable=yes");
+	fenster.focus();
+	return false;
+	}
+
 	function myclick(i) {
 		google.maps.event.trigger(gmarkers[i], "click");
 	}
 	
   function codeAddress() {
- 	if (address_marker) {
+
+	d = new Date();
+	tname = d.getTime();
+
+	if (address_marker) {
 		address_marker.setMap(null);
 		address_infowindow.close();
 	}
@@ -364,7 +400,7 @@ if(!$_SESSION['logged_in']){
 				address_html += "<option value='Marlesreuth'>Marlesreuth</option>";
 				address_html += "<option value='Marlesreuth' SELECTED>Marlesreuth</option>";
 				address_html += "</select> </td></tr>";
-			address_html += "<tr><td>Datum:</td> <td><input type='date' size='10' id='datum' value='<?php $datum = date("Y-m-d"); echo date("Y-m-d", strtotime ($datum)-0); ?>' </td>  (JJJJ-MM-TT) </td> </tr>";
+			address_html += "<tr><td>Datum:</td> <td><input class='dat1' type='date' size='10' id='datum' value='<?php $datum = date("Y-m-d"); echo date("Y-m-d", strtotime ($datum)-0); ?>' </td>  (JJJJ-MM-TT) </td> </tr>";
 			address_html += "<tr><td>Uhrzeit:</td> <td><input type='time' size='3' id='uhrzeit' value='' </td>  (HH:MM) </td> </tr>";
 			address_html += "<tr><td>Ort:</td> <td><select id='ort'>";
 //				address_html += "<option SELECTED>???</option>";
@@ -391,13 +427,14 @@ if(!$_SESSION['logged_in']){
 				address_html += "<option value='Wildacker'>Wildacker</option>";
 				address_html += "<option value='unbekannt' SELECTED>unbekannt</option>";
 				address_html += "</select> </td></tr>";
-			address_html += "<tr><td>Gewicht:</td> <td><input type='text' size='8' id='kz' value=''</td>  (wenn Erlegung) </td> </tr>"; 
+			address_html += "<tr><td>Gewicht:</td> <td><input type='text' size='8' id='kz' value=''</td>  (wenn Erlegung) </td> </tr>";
+			address_html += "<table><tr><td>Foto:</td> <td><input type='button' class='edit_button' id='tname' value='" + tname + "' onclick='upload(" + tname + ")'/></td> </tr>";
 			address_html += "<form action='text1'><p>Anmerkung:<br><textarea id='text1' name='text1' cols='30' rows='3' ></textarea></p></form>";
 				var lat_koord = results[0].geometry.location.lat().toFixed(6);
 				var lng_koord = results[0].geometry.location.lng().toFixed(6);
 				var lat_lng = lat_koord + ', ' + lng_koord;
 			address_html += "<tr><td>Koords:</td> <td><div id='Listing' style='font-size:12px'>" + lat_lng + "</div></td> </tr></table>";
-			address_html += "<form action='#'><input type='button' class='edit_button' value='Speichern & Schließen'  onclick='saveAddressData()'/></form>";
+			address_html += "<table><tr><td><input type='button' class='edit_button' value='Speichern & Schließen'  onclick='saveAddressData()'/></td> </tr></table>";
 			address_html += "</div>";
 
 			google.maps.event.addListener(address_marker, 'click', function() {
@@ -429,6 +466,10 @@ if(!$_SESSION['logged_in']){
 
 function initialize() {
 	geocoder = new google.maps.Geocoder();
+
+	d = new Date();
+	tname = d.getTime();
+
 	var myOptions = {
 		center: new google.maps.LatLng(50.308557,11.711553),
 		zoom: 12,
@@ -490,7 +531,7 @@ function initialize() {
 			html += "<option value='Marlesreuth'>Marlesreuth</option>";
 			html += "<option value='Marlesreuth' SELECTED>Marlesreuth</option>";
 			html += "</select> </td></tr>";
-		html += "<tr><td>Datum:</td> <td><input type='date' size='10' id='datum' value='<?php $datum = date("Y-m-d"); echo date("Y-m-d", strtotime ($datum)-0); ?>' </td>  (JJJJ-MM-TT) </td> </tr>";
+		html += "<tr><td>Datum:</td> <td><input class='dat1' type='date' size='10' id='datum' value='<?php $datum = date("Y-m-d"); echo date("Y-m-d", strtotime ($datum)-0); ?>' </td>  (JJJJ-MM-TT) </td> </tr>";
 		html += "<tr><td>Uhrzeit:</td> <td><input type='time' size='3' id='uhrzeit' </td>  (HH:MM) </td> </tr>";
 		html += "<tr><td>Ort:</td> <td><select id='ort'>";
 //			html += "<option SELECTED>???</option>";
@@ -518,9 +559,10 @@ function initialize() {
 			html += "<option value='unbekannt' SELECTED>unbekannt</option>";
 			html += "</select> </td></tr>";
 		html += "<tr><td>Gewicht:</td> <td><input type='text' size='8' id='kz'</td>  (wenn Erlegung) </td> </tr>";
+		html += "<table><tr><td>Foto:<input type='button' class='edit_button' value='" + tname + "' id='tname' onclick='upload(" + tname + ")'/></td> </tr>";
 		html += "<form action='text1'><p>Anmerkung:<br><textarea id='text1' name='text1' cols='30' rows='3' ></textarea></p></form>";
-		html += "<tr><td>Koords:</td> <td><div id='Listing' style='font-size:12px'></div></td> </tr>";
-		html += "<tr><td></td><td><input type='button' class='edit_button' value='Speichern & Schließen'  onclick='saveData()'/></td></tr></table></div>";
+		html += "<table><tr><td>Koords:</td> <td><div id='Listing' style='font-size:12px'></div></td> </tr></table>";
+		html += "<table><tr><td><input type='button' class='edit_button' value='Speichern & Schließen' onclick='saveData()'/></td> </tr></table>";
 
 		input_infowindow = new google.maps.InfoWindow({
 			content: html
@@ -560,10 +602,11 @@ function initialize() {
 			}
 		}
 		var vondatum = document.getElementById("vondatum").value;
+		var bisdatum = document.getElementById("bisdatum").value;
 		side_bar_html = '<table>';
 		var bounds = new google.maps.LatLngBounds();
 		
-			var url = "./masicht/scripte/phpsqlajax_genxml.php?sys=" + sys + "&vondatum=" + vondatum + "&anztyp=" + anztyp;
+			var url = "./masicht/scripte/phpsqlajax_genxml.php?sys=" + sys + "&vondatum=" + vondatum + "&bisdatum=" + bisdatum + "&anztyp=" + anztyp;
 			downloadUrl(url, function(doc) {
 			var xml = xmlParse(doc);
 			var markers = xml.documentElement.getElementsByTagName("marker");
@@ -577,6 +620,7 @@ function initialize() {
 				var uhrzeit = markers[i].getAttribute("uhrzeit");
 				var type = markers[i].getAttribute("type");
 				var kz = markers[i].getAttribute("kz");
+				var fname = markers[i].getAttribute("tname");
 				var text1 = markers[i].getAttribute("text1");
 				var point = new google.maps.LatLng(
 					parseFloat(markers[i].getAttribute("lat")),
@@ -586,13 +630,19 @@ function initialize() {
 					html += "<br/><u></u> " + datum + " &nbsp;&nbsp;&nbsp; " + uhrzeit +" &nbsp;&nbsp;&nbsp; " + ort;
 					html += "<br/<u></u> " + address;
 					html += "<br/<u></u> " + mitglied;
-					html += "<form action='text1'><p>Anmerkung:<br><textarea name='text1' cols='30' rows='3' readonly>"+ text1 +"</textarea></p></form>";
-					html += "<br/>ID: " + point_id;
-					html += "<br/>Koords:<span id='Koords_marker' style='font-size:12px'></span>";
-					html += "<form action='#'><input type='button' class='delete_button'  id='" + point_id + "' anzahl='Auswahlmarkername' value='Markierung löschen' onclick='javascript:deletePoint(id)' /></form>";
+					html += "</table><table><form action='text1'><p>Anmerkung:<br><textarea name='text1' cols='30' rows='3' readonly>"+ text1 +"</textarea></p></form></table>";
+					html += "<table><tr><td>Foto: <input type='button' class='edit_button' value='" + fname + "' onclick='displayf(" + fname + ")'</td></tr></table>";
+					html += "<table><tr><td>ID: " + point_id + "</td><td>";
+					html += "&nbsp;&nbsp;&nbsp;Koords:<span id='Koords_marker' style='font-size:12px'></span></td></tr></table>";
+					html += "<table><tr><td><form action='#'><input type='button' class='delete_button'  id='" + point_id + "' anzahl='Auswahlmarkername' value='Markierung löschen' onclick='javascript:deletePoint(id)' /></td></form>";
+					if (fname == '') {
+					d = new Date();
+					tname = d.getTime();
+					fname=tname;
+					};
 				var html_edit = "<div id='infofenster'><table>";
 					html_edit += "<tr><td>Anzahl:</td> <td><input type='text' size='5' value='" +anzahl+ "' id='anzahl'/> </td> </tr>";
-					html_edit += "<tr><td>Datum:</td> <td><input type='date' size='10' value='" +datum+ "' id='datum' </td>  (JJJJ-MM-TT) </td> </tr>";
+					html_edit += "<tr><td>Datum:</td> <td><input class='dat1' type='date' size='10' value='" +datum+ "' id='datum' </td>  (JJJJ-MM-TT) </td> </tr>";
 					html_edit += "<tr><td>Uhrzeit:</td> <td><input type='time' size='3' value='" +uhrzeit+ "' id='uhrzeit' </td>  (HH:MM) </td> </tr>";
 					html_edit += "<tr><td>Ort:</td> <td><select id='ort'>";
 						html_edit += "<option value='" +ort+ "' SELECTED>" +ort+ "</option>";
@@ -625,11 +675,12 @@ function initialize() {
 						html_edit += "<option value='unbekannt'>unbekannt</option>";
 						html_edit += "</select> </td></tr>";
 					html_edit += "<tr><td>Gewicht:</td> <td><input type='text' size='8' value='" +kz+ "' id='kz'</td>  (wenn Erlegung) </td> </tr>";
+					html_edit += "<table><tr><td>Foto:</td> <td><input type='button' class='edit_button' id='tname' value='" + fname + "' onclick='upload(" + fname + ")'/></td> </tr>";
 					html_edit += "<form action='text1'><p>Anmerkung:<br><textarea id='text1' name='text1' cols='30' rows='3' >"+ text1 +"</textarea></p></form>";
-					html_edit += "<tr><td>Koords:</td> <td><div id='Koords_marker' style='font-size:12px'></div></td> </tr></table>";
-					html_edit += "<form action='#'><input type='button' id='" + point_id + "' anzahl='XXXanzahl' value='Änderung speichern' class='edit_button' onclick='editData(id)' /></form></div>";
-					html += '<form action="#"><input type="button" class="edit_button"  id="' + point_id + '" name="' + html_edit + '" value="Bearbeiten" onclick="javascript:change_content(id,name)"/></form>';
-					html += "</div>";
+					html_edit += "<tr><td>Koords:</td> <td><div id='Koords_marker' style='font-size:12px'></div></td></tr></table>";
+					html_edit += "<table><tr><td><div<form action='#'><input type='button' id='" + point_id + "' anzahl='XXXanzahl' value='Änderung speichern' class='edit_button' onclick='editData(id)' /></form></div></td></tr></table>";
+					html += '<td><form action="#"><input type="button" class="edit_button"  id="' + point_id + '" name="' + html_edit + '" value="Bearbeiten" onclick="javascript:change_content(id,name)"/></form>';
+					html += "</td></tr></table></div>";
 				var marker = createMarker(point,point_id,datum,anzahl,kz,type,html);
 				bounds.extend(point);
 			}
@@ -641,6 +692,10 @@ function initialize() {
 			
 			side_bar_html += '</table>';
 			document.getElementById("side_bar").innerHTML = side_bar_html;
+
+			d = new Date();
+			tname = d.getTime();
+
 		});
 	}
 	
@@ -653,11 +708,12 @@ function initialize() {
       var type = escape(document.getElementById("type").value);
       var kz = escape(document.getElementById("kz").value);
       var text1 = escape(document.getElementById("text1").value);
+	  var tname = escape(document.getElementById("tname").value);
       var latlng = new_marker.getPosition();
 	  
 	  var anzahl_tmp = document.getElementById("anzahl").value;
- 
-      var url = "./masicht/scripte/phpsqlinfo_addrow_neu.php?sys=" + sys + "&anzahl=" + anzahl + "&address=" + address + "&ort=" + ort + "&datum=" + datum + "&uhrzeit=" + uhrzeit + "&type=" + type + "&kz=" + kz + "&mitglied=" + usr + "&text1=" + text1 + "&lat=" + latlng.lat() + "&lng=" + latlng.lng();
+
+      var url = "./masicht/scripte/phpsqlinfo_addrow_neu.php?sys=" + sys + "&anzahl=" + anzahl + "&address=" + address + "&ort=" + ort + "&datum=" + datum + "&uhrzeit=" + uhrzeit + "&type=" + type + "&kz=" + kz + "&mitglied=" + usr + "&text1=" + text1 + "&tname=" + tname + "&lat=" + latlng.lat() + "&lng=" + latlng.lng();  
       downloadUrl(url, function(data, responseCode) {
         if (responseCode == 200 && data.length <= 1) {
           input_infowindow.close();
@@ -677,11 +733,12 @@ function initialize() {
       var type = escape(document.getElementById("type").value);
       var kz = escape(document.getElementById("kz").value);
       var text1 = escape(document.getElementById("text1").value);
+      var tname = escape(document.getElementById("tname").value);
       var latlng = address_marker.getPosition();
 	  
 	  var anzahl_tmp = document.getElementById("anzahl").value;
- 
-      var url = "./masicht/scripte/phpsqlinfo_addrow_neu.php?sys=" + sys + "&anzahl=" + anzahl + "&address=" + address + "&ort=" + ort + "&datum=" + datum + "&uhrzeit=" + uhrzeit + "&type=" + type + "&kz=" + kz + "&mitglied=" + usr + "&text1=" + text1 + "&lat=" + latlng.lat() + "&lng=" + latlng.lng();
+
+      var url = "./masicht/scripte/phpsqlinfo_addrow_neu.php?sys=" + sys + "&anzahl=" + anzahl + "&address=" + address + "&ort=" + ort + "&datum=" + datum + "&uhrzeit=" + uhrzeit + "&type=" + type + "&kz=" + kz + "&mitglied=" + usr + "&text1=" + text1 + "&tname=" + tname + "&lat=" + latlng.lat() + "&lng=" + latlng.lng();
       downloadUrl(url, function(data, responseCode) {
         if (responseCode == 200 && data.length <= 1) {
           address_infowindow.close();
@@ -701,14 +758,15 @@ function initialize() {
 		var type = escape(document.getElementById("type").value);
 		var kz = escape(document.getElementById("kz").value);
 		var text1 = escape(document.getElementById("text1").value);
+		var tname = escape(document.getElementById("tname").value);
 	  
 	  if (gmarkers[i].my_id == id) {
 		var latlng_marker = gmarkers[i].getPosition();
 	  }
 	
 	  var anzahl_tmp = document.getElementById("anzahl").value;
- 
-      var url = "./masicht/scripte/php_edit_point_neu.php?sys=" + sys + "&anzahl=" + anzahl + "&address=" + address + "&ort=" + ort + "&datum=" + datum + "&uhrzeit=" + uhrzeit + "&type=" + type + "&kz=" + kz + "&mitglied=" + usr + "&text1=" + text1 + "&lat=" + latlng_marker.lat() + "&lng=" + latlng_marker.lng() + "&id=" + id;
+
+      var url = "./masicht/scripte/php_edit_point_neu.php?sys=" + sys + "&anzahl=" + anzahl + "&address=" + address + "&ort=" + ort + "&datum=" + datum + "&uhrzeit=" + uhrzeit + "&type=" + type + "&kz=" + kz + "&mitglied=" + usr + "&text1=" + text1 + "&tname=" + tname + "&lat=" + latlng_marker.lat() + "&lng=" + latlng_marker.lng() + "&id=" + id;
       downloadUrl(url, function(data, responseCode) {
         if (responseCode == 200 && data.length <= 1) {
           infoWindow.close();
@@ -805,7 +863,6 @@ function initialize() {
 			<div style="background-color:#9eff80; padding-bottom:5px; padding-top:3px">
 				<div style="float:left">
 					<p style="font-size:14px; font-weight:bold; margin:0">Ortssuche</p>
-					<p style="font-size: 11px; font-weight:normal; margin:0"> (z.B. <i>"Marlesreuth"</i>) </p>
 				</div>
 				<div style="float:right; margin-top:3px">
 					<form action="get" method="post" onsubmit="codeAddress(); return false">
@@ -814,21 +871,24 @@ function initialize() {
 						</p>
 					</form>
 				</div>
-					
+				<div style="float:left">
 				<form action="get" method="post" onsubmit="codeAddress(); return false" style="clear:both">
 					<p style="margin:0">
-					<input id="address" size="30" type="text" value="" />
+					<input id="address" size="26" type="text" value="" />
 					</p>
 			    </form>
+				</div>
 			</div>
 			<div style="background-color:#9eff80; padding-bottom:5px; padding-top:3px">
 				<div style="float:left">
-					<p style="font-size:14px; font-weight:bold; margin:0">Anzeige ab Datum</p>
-					<p style="font-size: 11px; font-weight:normal; margin:0"> (<i>z.B. 2014-12-01</i>) </p>
+					<p style="font-size:14px; font-weight:bold; margin:0">Datum von &nbsp;&nbsp;&nbsp;&nbsp; bis</p>
 				</div>
 				<form action="get" method="post" onsubmit="loadData(); return false" style="clear:both">
 					<p style="margin:0">
-					<input id="vondatum" size="9" type="date" value="" />
+					<input id="vondatum" size="9" class="dat1" type="text" value="<?php $datum = date("Y-m-d"); echo date("Y-m-d", strtotime ($datum)-31449600); ?>" />
+					<input id="bisdatum" size="9" class="dat1" type="text" value="<?php echo date("Y-m-d", strtotime ($datum)); ?>" />
+					</p>
+					<p style="margin:0">
 					<input type="button" style="font-weight:bold;font-size:12px" class="button" value="S" onclick="loadData('s')" />
 					<input type="button" style="font-weight:bold;font-size:12px" class="button" value="E" onclick="loadData('e')" />
 					<input type="button" style="font-weight:bold;font-size:12px" class="button" value="R" onclick="loadData('r')" />
@@ -854,7 +914,7 @@ function initialize() {
 </div>
 
 <div id="footer">
-    <p> Version 1.2 <span style="color: black;">•</span> Günter Friedrich <span style="color: black;">•</span> Tel.:09282-3653 <span style="color: black;">•</span>Mobil: 0174-3472600 <span style="color: black;">•</span>
+    <p> Version 1.3 <span style="color: black;">•</span> Günter Friedrich <span style="color: black;">•</span> Tel.:09282-3653 <span style="color: black;">•</span>Mobil: 0174-3472600 <span style="color: black;">•</span>
 	Email:<a href="mailto:gfriedrich@dv-tech.de">gfriedrich@dv-tech.de.de</a></p>
 </div>
 	

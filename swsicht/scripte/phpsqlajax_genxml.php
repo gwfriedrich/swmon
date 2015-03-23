@@ -4,6 +4,7 @@ require("phpsqlajax_dbinfo.php");
 
 // Gets data from URL parameters
 $vondatum = $_GET['vondatum'];
+$bisdatum = $_GET['bisdatum'];
 $bg = $_GET['bg'];
 $sys = $_GET['sys'];
 
@@ -25,7 +26,7 @@ if (!$db_selected) {
 }
 
 // Select all the rows in the sichtungen table
-$query = "SELECT * FROM sicht$bg WHERE datum >= '$vondatum'
+$query = "SELECT * FROM sicht$bg WHERE datum >= '$vondatum' AND datum <= '$bisdatum'
 ORDER BY anzahl, datum DESC";
 $result = mysql_query($query);
 if (!$result) {

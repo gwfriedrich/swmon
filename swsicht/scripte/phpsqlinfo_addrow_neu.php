@@ -36,8 +36,8 @@ if (!$db_selected) {
 
 // Insert new row with user data
 $query = sprintf("INSERT INTO sicht$bg " .
-         " (id, bg, anzahl, address, ort, datum, uhrzeit, lat, lng, type, kz, mitglied,text1,tname ) " .
-         " VALUES (NULL, '%s','%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s','%s','%s','%s','%s' );",
+         " (id, bg, anzahl, address, ort, datum, uhrzeit, lat, lng, type, kz, mitglied, text1, tname ) " .
+         " VALUES (NULL, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s','%s','%s','%s','%s' );",
          mysql_real_escape_string($bg),
          mysql_real_escape_string($anzahl),
          mysql_real_escape_string($address),

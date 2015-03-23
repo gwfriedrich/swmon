@@ -5,6 +5,7 @@ require("phpsqlajax_dbinfo.php");
 // Gets data from URL parameters
 $sys = $_GET['sys'];
 $vondatum = $_GET['vondatum'];
+$bisdatum = $_GET['bisdatum'];
 $anztyp = $_GET['anztyp'];
 
 
@@ -29,11 +30,11 @@ if (!$db_selected) {
 if ($anztyp == 'r') {
 	$query = "SELECT * FROM marlesreuth WHERE datum = '' ORDER BY datum DESC";
 } elseif ($anztyp == 'e') {
-	$query = "SELECT * FROM marlesreuth WHERE datum >= '$vondatum' AND kz > '' ORDER BY datum DESC";
+	$query = "SELECT * FROM marlesreuth WHERE datum >= '$vondatum' AND datum <= '$bisdatum' AND kz > '' ORDER BY datum DESC";
 } elseif ($anztyp == 's') {
-	$query = "SELECT * FROM marlesreuth WHERE datum > '' AND datum >= '$vondatum' ORDER BY datum DESC";
+	$query = "SELECT * FROM marlesreuth WHERE datum > '' AND datum >= '$vondatum' AND datum <= '$bisdatum' ORDER BY datum DESC";
 } else {
-	$query = "SELECT * FROM marlesreuth ORDER BY datum DESC";
+	$query = "SELECT * FROM marlesreuth WHERE datum = '' OR ( datum >= '$vondatum' AND datum <= '$bisdatum' ) ORDER BY datum DESC";
 }
 $result = mysql_query($query);
 if (!$result) {
@@ -60,6 +61,7 @@ while ($row = @mysql_fetch_assoc($result)){
   $newnode->setAttribute("kz", (UTF8_encode($row['kz'])));
   $newnode->setAttribute("mitglied", (UTF8_encode($row['mitglied'])));
   $newnode->setAttribute("text1", (UTF8_encode($row['text1'])));
+  $newnode->setAttribute("tname", (UTF8_encode($row['tname'])));
 }
 
 
