@@ -22,7 +22,7 @@ if(!$_SESSION['logged_in'])
 
 	<base href="http://localhost/swmon/" />
 <!-- <base href="http://www.jagenfischennaila.de" />   -->
-	
+
 	<link rel="stylesheet" type="text/css" href="./style/style.css" />
 
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.7&amp;sensor=false&amp;libraries=drawing"></script>
@@ -222,6 +222,8 @@ if(!$_SESSION['logged_in'])
         icon: "./images/googlemaps/klrotte.png"},
       grRotte: {
         icon: "./images/googlemaps/grrotte.png"},
+      Kirrung: {
+        icon: "./images/googlemaps/kirrung.png"},
       unbekannt: {
         icon: "./images/googlemaps/unbekannt.png"}
     };
@@ -425,6 +427,7 @@ if(!$_SESSION['logged_in'])
 				address_html += "<option value='Ueberl'>Ueberl</option>";
 				address_html += "<option value='klRotte'>klRotte</option>";
 				address_html += "<option value='grRotte'>grRotte</option>";
+				address_html += "<option value='Kirrung'>Kirrung</option>";
 				address_html += "<option value='unbekannt' SELECTED>unbekannt</option>";
 				address_html += "</select> </td></tr>";
 			address_html += "<tr><td>Rotte:</td> <td><input type='text' size='8' id='kz' value=''/></td> </tr></table>";
@@ -481,7 +484,7 @@ function initialize() {
 		scaleControl: true,
 				scaleControlOptions: {position: google.maps.ControlPosition.BOTTOM_LEFT},
 		overviewMapControl: true,
-		mapTypeId: google.maps.MapTypeId.ROADMAP
+		mapTypeId: 'OSM'
 	};
 	
 //  Liste Reviere 
@@ -568,6 +571,7 @@ function initialize() {
 			html += "<option value='Ueberl'>Ueberl</option>";
 			html += "<option value='klRotte'>klRotte</option>";
 			html += "<option value='grRotte'>grRotte</option>";
+			html += "<option value='Kirrung'>Kirrung</option>";
 			html += "<option value='unbekannt' SELECTED>unbekannt</option>";
 			html += "</select> </td></tr>";
 		html += "<tr><td>Rotte:</td> <td><input type='text' size='8' id='kz'/></td> </tr></table>";
@@ -685,6 +689,7 @@ function initialize() {
 						html_edit += "<option value='Ueberl'>Ueberl</option>";
 						html_edit += "<option value='klRotte'>klRotte</option>";
 						html_edit += "<option value='grRotte'>grRotte</option>";
+						html_edit += "<option value='Kirrung'>Kirrung</option>";
 						html_edit += "<option value='unbekannt'>unbekannt</option>";
 						html_edit += "</select> </td></tr>";
 					html_edit += "<tr><td>Rotte:</td> <td><input type='text' size='8' value='" + kz + "' id='kz'/></td> </tr></table>";
@@ -704,7 +709,7 @@ function initialize() {
 			var ctaLayer = new google.maps.KmlLayer({url: "http://www.jagenfischennaila.de/map/" + bg + ".kml"});
 			ctaLayer.setMap(map);
 
-			map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+			map.setMapTypeId('OSM');
 			
 			side_bar_html += '</table>';
 			document.getElementById("side_bar").innerHTML = side_bar_html;
@@ -815,7 +820,7 @@ function initialize() {
 		setTimeout( function() {google.maps.event.trigger(gmarkers[i], "click")},25);
 	}
 	function zoomOut(i){
-		map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+		map.setMapTypeId('OSM');
 		if (input_infowindow) {setTimeout('infoWindow.close()', 5);}
 		if (last_zoom > 15) {
 			setTimeout('map.setZoom(9)', 20);
@@ -864,6 +869,7 @@ function initialize() {
 		<td align="center" valign="middle"><img class='xyz' src="./images/googlemaps/ueberl.png" alt="Ueberl" />Ueberl</td>
 		<td align="center" valign="middle"><img class='xyz' src="./images/googlemaps/klrotte.png" alt="klRotte" />klRotte</td>
 		<td align="center" valign="middle"><img class='xyz' src="./images/googlemaps/grrotte.png" alt="grRotte" />grRotte</td>
+		<td align="center" valign="middle"><img class='xyz' src="./images/googlemaps/kirrung.png" alt="Kirrung" />Kirrung</td>
 		<td align="center" valign="middle"><img class='xyz' src="./images/googlemaps/unbekannt.png" alt="unbekannt" />unbekannt</td>
     </tr>
 </table> 

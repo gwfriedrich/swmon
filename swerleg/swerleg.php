@@ -21,7 +21,7 @@ if(!$_SESSION['logged_in'])
 
 	<base href="http://localhost/swmon/" />
 <!-- <base href="http://www.jagenfischennaila.de" />   -->
-	
+
 	<link rel="stylesheet" type="text/css" href="./style/style.css" />
 
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.7&amp;sensor=false&amp;libraries=drawing"></script>
@@ -466,7 +466,7 @@ function initialize() {
 		scaleControl: true,
 				scaleControlOptions: {position: google.maps.ControlPosition.BOTTOM_LEFT},
 		overviewMapControl: true,
-		mapTypeId: google.maps.MapTypeId.ROADMAP
+		mapTypeId: 'OSM'
 	};
 
 //  Liste Reviere 
@@ -677,7 +677,7 @@ function initialize() {
 				bounds.extend(point);
 			}
 			map.fitBounds(bounds);
-			map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+			map.setMapTypeId('OSM');
 			
 			var ctaLayer = new google.maps.KmlLayer({url: "http://www.jagenfischennaila.de/map/" + bg + ".kml"});
 			ctaLayer.setMap(map);
@@ -791,7 +791,7 @@ function initialize() {
 		setTimeout( function() {google.maps.event.trigger(gmarkers[i], "click")},25);
 	}
 	function zoomOut(i){
-		map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+		map.setMapTypeId('OSM');
 		if (input_infowindow) {setTimeout('infoWindow.close()', 5);}
 		if (last_zoom > 15) {
 			setTimeout('map.setZoom(9)', 20);

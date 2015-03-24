@@ -481,7 +481,7 @@ function initialize() {
 		scaleControl: true,
 				scaleControlOptions: {position: google.maps.ControlPosition.BOTTOM_LEFT},
 		overviewMapControl: true,
-		mapTypeId: google.maps.MapTypeId.ROADMAP
+		mapTypeId: 'OSM'
 	};
 
 	map = new google.maps.Map(document.getElementById('map_canvas'), myOptions);
@@ -685,7 +685,7 @@ function initialize() {
 				bounds.extend(point);
 			}
 			map.fitBounds(bounds);
-			map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+			map.setMapTypeId('OSM');
 			
 			var ctaLayer = new google.maps.KmlLayer({url: 'http://www.jagenfischennaila.de/map/marlesreuth.kml'});
 			ctaLayer.setMap(map);
@@ -799,7 +799,7 @@ function initialize() {
 		setTimeout( function() {google.maps.event.trigger(gmarkers[i], "click")},25);
 	}
 	function zoomOut(i){
-		map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+		map.setMapTypeId('OSM');
 		if (input_infowindow) {setTimeout('infoWindow.close()', 5);}
 		if (last_zoom > 15) {
 			setTimeout('map.setZoom(9)', 20);
