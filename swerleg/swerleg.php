@@ -285,6 +285,7 @@ if(!$_SESSION['logged_in'])
 		});
 
 		google.maps.event.addListener(infoWindow, "domready", function() { 
+			$('#datum').datepicker( {dateFormat: "yy-mm-dd"} ); 
 			var newLat = marker.getPosition().lat().toFixed(6);
 			var newLng = marker.getPosition().lng().toFixed(6);
 			var newCoords = newLat+ ', ' + newLng;
@@ -571,6 +572,7 @@ function initialize() {
 		});
 
 		google.maps.event.addListener(input_infowindow, "domready", function() { 
+			$('#datum').datepicker( {dateFormat: "yy-mm-dd"} ); 
 			var newLat = new_marker.getPosition().lat().toFixed(6);
 			var newLng = new_marker.getPosition().lng().toFixed(6);
 			var newCoords = newLat+ ', ' + newLng;

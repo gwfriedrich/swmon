@@ -26,7 +26,7 @@ if (!$db_selected) {
 }
 
 // Select all the rows in the sichtungen table
-$query = "SELECT * FROM sicht$bg WHERE datum >= '$vondatum' AND datum <= '$bisdatum'
+$query = "SELECT * FROM sicht$bg WHERE (datum >= '$vondatum' AND datum <= '$bisdatum') OR type = 'Kirrung'
 ORDER BY anzahl, datum DESC";
 $result = mysql_query($query);
 if (!$result) {
